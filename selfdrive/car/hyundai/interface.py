@@ -90,12 +90,17 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.16], [0.01]]
       ret.minSteerSpeed = 60 * CV.KPH_TO_MS
     elif candidate == CAR.GENESIS_G80:
-      ret.lateralTuning.pid.kf = 0.00005
-      ret.mass = 2060. + STD_CARGO_KG
+      ret.lateralTuning.init('indi')
+      ret.lateralTuning.indi.innerLoopGain = 2.5  #stock is 3.0 - outer and inner are gains. Higher values = more steering
+      ret.lateralTuning.indi.outerLoopGain = 2.0  #stock is 2.0 - outer and inner are gains. Higher values = more steering
+      ret.lateralTuning.indi.timeConstant = 1.5  #Stock is 1.5 - timeconstant is smoothing. Higher values == more smoothing but less response  
+      ret.lateralTuning.indi.actuatorEffectiveness = 1.3  #Stock is 1.0 - actuatoreffectiveness is how much it steers. Lower values == more steering 
+      ret.mass = 2140. + STD_CARGO_KG
       ret.wheelbase = 3.01
       ret.steerRatio = 16.5
-      ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
-      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.16], [0.01]]
+      #ret.lateralTuning.pid.kf = 0.00005
+      #ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
+      #ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.16], [0.01]]
     elif candidate == CAR.GENESIS_G90:
       ret.mass = 2200
       ret.wheelbase = 3.15
@@ -225,7 +230,7 @@ class CarInterface(CarInterfaceBase):
                                                                      else 2 if 1056 in fingerprint[2] else -1
     ret.radarOffCan = ret.sccBus == -1
     ret.openpilotLongitudinalControl = bool(ret.sccBus and not ret.radarOffCan)
-    ret.autoLcaEnabled = False
+    ret.autoLcaEnabled = True
 
     return ret
 
